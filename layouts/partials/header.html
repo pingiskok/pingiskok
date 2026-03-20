@@ -1,0 +1,6 @@
+<nav class="float-nav" id="floatNav">
+  <a href="{{ .Site.Home.Permalink }}" class="float-nav-home" aria-label="{{ i18n "back" }}">
+    <img src="{{ "images/avatar.jpg" | relURL }}" alt="{{ .Site.Title }}" class="float-nav-avatar">
+  </a>
+  {{ partial "lang-switch.html" . }}
+</nav>

@@ -1,0 +1,19 @@
+<div class="lang-switch">
+  {{ $currentLang := .Site.Language.Lang }}
+  {{ range .Site.Languages }}
+    {{ if eq .Lang $currentLang }}
+      <span class="lang-active">{{ .LanguageName }}</span>
+    {{ else }}
+      {{ $home := $.Site.Home.Permalink }}
+      {{ if $.IsTranslated }}
+        {{ range $.Translations }}
+          {{ if eq .Language.Lang .Lang }}
+            <a href="{{ .Permalink }}" class="lang-link">{{ .Language.LanguageName }}</a>
+          {{ end }}
+        {{ end }}
+      {{ else }}
+        <a href="{{ if eq .Lang "en" }}{{ $.Site.BaseURL }}en/{{ else }}{{ $.Site.BaseURL }}{{ end }}" class="lang-link">{{ .LanguageName }}</a>
+      {{ end }}
+    {{ end }}
+  {{ end }}
+</div>

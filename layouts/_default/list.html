@@ -1,0 +1,23 @@
+{{ define "main" }}
+<h1 class="page-title">{{ .Title }}</h1>
+
+<section class="posts-list">
+  {{ range .Pages.ByDate.Reverse }}
+  <article class="post-card" data-num="{{ with .Params.number }}{{ printf "%02d" . }}{{ end }}">
+    <div class="post-meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02.01.2006" }}</time>
+      {{ range .Params.tags }}
+        <span class="tag">{{ . }}</span>
+      {{ end }}
+    </div>
+    <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+    {{ with .Params.summary }}
+      <p class="post-summary">{{ . }}</p>
+    {{ else }}
+      <p class="post-summary">{{ .Summary }}</p>
+    {{ end }}
+    <a href="{{ .Permalink }}" class="read-more">Читать &rarr;</a>
+  </article>
+  {{ end }}
+</section>
+{{ end }}

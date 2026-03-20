@@ -1,0 +1,23 @@
+{{ define "main" }}
+<article class="post-full">
+  <a href="{{ .Site.Home.Permalink }}" class="back-link">&larr; {{ i18n "back" }}</a>
+
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "02.01.2006" }}</time>
+      {{ range .Params.tags }}
+        <span class="tag">{{ . }}</span>
+      {{ end }}
+    </div>
+    <h1>{{ .Title }}</h1>
+  </header>
+
+  <div class="post-content">
+    {{ .Content }}
+  </div>
+
+  <footer class="post-footer">
+    <a href="{{ .Site.Home.Permalink }}" class="back-link">&larr; {{ i18n "back" }}</a>
+  </footer>
+</article>
+{{ end }}

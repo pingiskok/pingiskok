@@ -1,0 +1,40 @@
+baseURL = "https://rmrf.tips/"
+title = "Пингискок"
+defaultContentLanguage = "ru"
+
+[params]
+  author = "rmrf_0"
+  telegram = "https://t.me/rmrf_0"
+
+[languages]
+  [languages.ru]
+    weight = 1
+    languageName = "RU"
+    languageCode = "ru"
+    contentDir = "content/ru"
+    [languages.ru.params]
+      description = "Баги, уязвимости и security-ресерч. Web2, Web3, Bug Bounty"
+
+  [languages.en]
+    weight = 2
+    languageName = "EN"
+    languageCode = "en"
+    title = "Pingiskok"
+    contentDir = "content/en"
+    [languages.en.params]
+      description = "Bugs, vulnerabilities and security research. Web2, Web3, Bug Bounty"
+
+[markup]
+  [markup.highlight]
+    style = "monokai"
+    lineNos = false
+    guessSyntax = true
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[outputs]
+  home = ["HTML", "RSS"]
+
+[pagination]
+  pagerSize = 10
