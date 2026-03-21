@@ -1,6 +1,6 @@
 ---
 title: "JWT, Part 3: alg:none - one line and you're admin"
-date: 2026-03-20T18:02:00+03:00
+date: 2026-03-21T18:02:00+03:00
 number: 3
 tags: ["jwt", "security", "web", "auth"]
 summary: "The RFC requires every JWT library to support the none algorithm. Change one field in the header - and the server skips signature verification."

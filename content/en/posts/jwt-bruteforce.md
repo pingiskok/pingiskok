@@ -1,6 +1,6 @@
 ---
 title: "JWT, Part 7: Brute-forcing JWT secrets on GPU"
-date: 2026-03-20T18:06:00+03:00
+date: 2026-03-21T18:06:00+03:00
 number: 7
 tags: ["jwt", "security", "web", "auth"]
 summary: "JWT contains everything for an offline attack: message and signature. Hashcat on GPU runs through 150 million HS256 per second. The secret 'secret' is cracked in 2 seconds."

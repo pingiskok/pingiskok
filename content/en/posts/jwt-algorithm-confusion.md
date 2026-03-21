@@ -1,6 +1,6 @@
 ---
 title: "JWT, Part 4: Algorithm Confusion - public key as password"
-date: 2026-03-20T18:03:00+03:00
+date: 2026-03-21T18:03:00+03:00
 number: 4
 tags: ["jwt", "security", "web", "auth"]
 summary: "Take the server's public key from open access, sign a token with it - and the server accepts it. The signature exists, the signature is correct, but the token is forged."

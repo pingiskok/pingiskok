@@ -1,6 +1,6 @@
 ---
 title: "JWT, Part 5: kid injection - SQL Injection via token header"
-date: 2026-03-20T18:04:00+03:00
+date: 2026-03-21T18:04:00+03:00
 number: 5
 tags: ["jwt", "security", "web", "auth"]
 summary: "The RFC doesn't define the structure of kid. Developers use it as a file path, SQL parameter, or command argument. Each option is a separate class of vulnerability."

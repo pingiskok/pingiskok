@@ -1,6 +1,6 @@
 ---
 title: "JWT, часть 8: Psychic Signatures - нулевая подпись на Java"
-date: 2026-03-20T18:07:00+03:00
+date: 2026-03-21T18:07:00+03:00
 number: 8
 tags: ["jwt", "security", "web", "auth"]
 summary: "Подпись из одних нулей проходит ECDSA-верификацию на Java 15-18. Для любого сообщения, с любым ключом. Пять строк Python - и ты admin."
@@ -42,16 +42,16 @@ ECDSA (Elliptic Curve Digital Signature Algorithm) - алгоритм цифро
 <div class="ecdsa-viz" style="margin: 2rem 0;">
 <div style="background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 16px 16px; position: relative; overflow: hidden;">
   <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
-    <button onclick="ecdsaSetMode('normal')" id="ecdsa-btn-normal" style="font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--pink); background: rgba(254,205,200,0.08); color: var(--pink); cursor: pointer;">Normal verification</button>
-    <button onclick="ecdsaSetMode('attack')" id="ecdsa-btn-attack" style="font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer;">Attack: r=0, s=0</button>
-    <button onclick="ecdsaSetMode('compare')" id="ecdsa-btn-compare" style="font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer;">Compare</button>
+    <button onclick="ecdsaSetMode('normal')" id="ecdsa-btn-normal" style="font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--pink); background: rgba(254,205,200,0.08); color: var(--pink); cursor: pointer;">Нормальная верификация</button>
+    <button onclick="ecdsaSetMode('attack')" id="ecdsa-btn-attack" style="font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer;">Атака: r=0, s=0</button>
+    <button onclick="ecdsaSetMode('compare')" id="ecdsa-btn-compare" style="font-family: var(--font-mono); font-size: 12px; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); cursor: pointer;">Сравнение</button>
   </div>
   <svg id="ecdsa-graph" width="100%" viewBox="0 0 640 420"></svg>
   <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 11px; color: var(--text-dim); flex-wrap: wrap; font-family: var(--font-mono);">
-    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pink);vertical-align:middle;margin-right:4px;"></span>Elliptic curve</span>
-    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#e8a838;vertical-align:middle;margin-right:4px;"></span>Signature points (r, s)</span>
-    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff6b6b;vertical-align:middle;margin-right:4px;"></span>Zero signature</span>
-    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#68d391;vertical-align:middle;margin-right:4px;"></span>Verification result</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pink);vertical-align:middle;margin-right:4px;"></span>Эллиптическая кривая</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#e8a838;vertical-align:middle;margin-right:4px;"></span>Точки подписи (r, s)</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff6b6b;vertical-align:middle;margin-right:4px;"></span>Нулевая подпись</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#68d391;vertical-align:middle;margin-right:4px;"></span>Результат верификации</span>
   </div>
 </div>
 <div id="ecdsa-info" style="margin-top: 12px; padding: 14px 16px; background: var(--bg-card); border-radius: var(--radius); border: 1px solid var(--border); font-size: 12px; line-height: 1.7; color: var(--text-dim); font-family: var(--font-mono);"></div>
@@ -121,8 +121,8 @@ function drawNormal() {
   const G = {x:-1.73, y:Math.sqrt((-1.73)**3-3*(-1.73)+3)};
   const R = {x:1.5, y:Math.sqrt(1.5**3-3*1.5+3)};
   const Q = {x:0.3, y:Math.sqrt(0.3**3-3*0.3+3)};
-  s += drawPoint(G.x,G.y,C.pinkMid,'G (generator)','left',false);
-  s += drawPoint(Q.x,Q.y,C.link,'Q (pub key)','right',false);
+  s += drawPoint(G.x,G.y,C.pinkMid,'G (генератор)','left',false);
+  s += drawPoint(Q.x,Q.y,C.link,'Q (публ. ключ)','right',false);
   s += drawPoint(R.x,R.y,C.warm,'R = k\u00b7G','right',true);
   const [gsx,gsy]=toSvg(G.x,G.y), [rsx,rsy]=toSvg(R.x,R.y);
   s += '<path d="M'+gsx+' '+gsy+' Q'+cx+' '+(cy-60)+' '+rsx+' '+rsy+'" fill="none" stroke="'+C.warm+'" stroke-width="1" stroke-dasharray="6 4" opacity="0.6"/>';
@@ -130,9 +130,9 @@ function drawNormal() {
   s += '<line x1="'+rsx+'" y1="'+rsy+'" x2="'+rsx+'" y2="'+cy+'" stroke="'+C.warm+'" stroke-width="1" stroke-dasharray="4 3" opacity="0.4"/>';
   s += '<text x="'+rx0+'" y="'+(cy+32)+'" fill="'+C.warm+'" font-size="11" font-family="var(--font-mono)" text-anchor="middle">r = x(R)</text>';
   const vx=cx+170;
-  s += '<text x="'+vx+'" y="44" fill="'+C.warm+'" font-size="12" font-family="var(--font-mono)">Signature: (r, s)</text>';
+  s += '<text x="'+vx+'" y="44" fill="'+C.warm+'" font-size="12" font-family="var(--font-mono)">Подпись: (r, s)</text>';
   s += '<text x="'+vx+'" y="62" fill="'+C.dim+'" font-size="11" font-family="var(--font-mono)">r \u2260 0, s \u2260 0</text>';
-  s += '<text x="'+vx+'" y="90" fill="'+C.green+'" font-size="11" font-family="var(--font-mono)">Verification:</text>';
+  s += '<text x="'+vx+'" y="90" fill="'+C.green+'" font-size="11" font-family="var(--font-mono)">Верификация:</text>';
   s += '<text x="'+vx+'" y="106" fill="'+C.dim+'" font-size="10" font-family="var(--font-mono)">u\u2081 = hash\u00b7s\u207b\u00b9</text>';
   s += '<text x="'+vx+'" y="120" fill="'+C.dim+'" font-size="10" font-family="var(--font-mono)">u\u2082 = r\u00b7s\u207b\u00b9</text>';
   s += '<text x="'+vx+'" y="134" fill="'+C.dim+'" font-size="10" font-family="var(--font-mono)">P = u\u2081\u00b7G + u\u2082\u00b7Q</text>';
@@ -153,15 +153,15 @@ function drawAttack() {
   s += '<text x="'+(ox+14)+'" y="'+(oy-10)+'" fill="'+C.red+'" font-size="12" font-family="var(--font-mono)" font-weight="700">O (0,0)</text>';
   s += '<text x="'+(ox+14)+'" y="'+(oy+6)+'" fill="'+C.red+'" font-size="10" font-family="var(--font-mono)" opacity="0.7">r=0, s=0</text>';
   const vx=cx+150;
-  s += '<text x="'+vx+'" y="40" fill="'+C.red+'" font-size="12" font-family="var(--font-mono)" font-weight="700">ATTACK: (r=0, s=0)</text>';
-  s += '<text x="'+vx+'" y="60" fill="'+C.dim+'" font-size="10" font-family="var(--font-mono)">s\u207b\u00b9 \u2192 does not exist</text>';
+  s += '<text x="'+vx+'" y="40" fill="'+C.red+'" font-size="12" font-family="var(--font-mono)" font-weight="700">АТАКА: (r=0, s=0)</text>';
+  s += '<text x="'+vx+'" y="60" fill="'+C.dim+'" font-size="10" font-family="var(--font-mono)">s\u207b\u00b9 \u2192 не существует</text>';
   s += '<text x="'+vx+'" y="74" fill="'+C.red+'" font-size="10" font-family="var(--font-mono)">Java: s\u207b\u00b9 = 0 \u274c</text>';
   s += '<text x="'+vx+'" y="92" fill="'+C.dim+'" font-size="10" font-family="var(--font-mono)">u\u2081 = hash \u00b7 0 = 0</text>';
   s += '<text x="'+vx+'" y="106" fill="'+C.dim+'" font-size="10" font-family="var(--font-mono)">u\u2082 = 0 \u00b7 0 = 0</text>';
   s += '<text x="'+vx+'" y="124" fill="'+C.warm+'" font-size="10" font-family="var(--font-mono)">P = 0\u00b7G + 0\u00b7Q = O</text>';
-  s += '<text x="'+vx+'" y="138" fill="'+C.warm+'" font-size="10" font-family="var(--font-mono)">  (point at infinity)</text>';
+  s += '<text x="'+vx+'" y="138" fill="'+C.warm+'" font-size="10" font-family="var(--font-mono)">  (точка бесконечности)</text>';
   s += '<text x="'+vx+'" y="156" fill="'+C.red+'" font-size="10" font-family="var(--font-mono)">x(O) = 0 == r = 0</text>';
-  s += '<text x="'+vx+'" y="172" fill="'+C.green+'" font-size="12" font-family="var(--font-mono)" font-weight="700">\u2192 TRUE. Signature accepted!</text>';
+  s += '<text x="'+vx+'" y="172" fill="'+C.green+'" font-size="12" font-family="var(--font-mono)" font-weight="700">\u2192 TRUE. Подпись принята!</text>';
   const [gx,gy]=toSvg(G.x,G.y), [qx,qy]=toSvg(Q.x,Q.y);
   s += '<line x1="'+gx+'" y1="'+gy+'" x2="'+ox+'" y2="'+oy+'" stroke="'+C.red+'" stroke-width="0.8" stroke-dasharray="3 4" opacity="0.3"/>';
   s += '<line x1="'+qx+'" y1="'+qy+'" x2="'+ox+'" y2="'+oy+'" stroke="'+C.red+'" stroke-width="0.8" stroke-dasharray="3 4" opacity="0.3"/>';
@@ -170,8 +170,8 @@ function drawAttack() {
 function drawCompare() {
   let s = '';
   s += '<line x1="'+cx+'" y1="30" x2="'+cx+'" y2="400" stroke="'+C.border+'" stroke-width="1" stroke-dasharray="6 4"/>';
-  s += '<text x="'+(cx/2)+'" y="36" fill="'+C.green+'" font-size="11" font-family="var(--font-mono)" text-anchor="middle">Normal (r\u22600, s\u22600)</text>';
-  s += '<text x="'+(cx+cx/2)+'" y="36" fill="'+C.red+'" font-size="11" font-family="var(--font-mono)" text-anchor="middle">Attack (r=0, s=0)</text>';
+  s += '<text x="'+(cx/2)+'" y="36" fill="'+C.green+'" font-size="11" font-family="var(--font-mono)" text-anchor="middle">\u041d\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u0430\u044f (r\u22600, s\u22600)</text>';
+  s += '<text x="'+(cx+cx/2)+'" y="36" fill="'+C.red+'" font-size="11" font-family="var(--font-mono)" text-anchor="middle">\u0410\u0442\u0430\u043a\u0430 (r=0, s=0)</text>';
   const ls=28, lCx=160, lCy=220, rCx=480, rCy=220;
   function lT(x,y){return[lCx+x*ls,lCy-y*ls];}
   function rT(x,y){return[rCx+x*ls,rCy-y*ls];}
@@ -184,7 +184,7 @@ function drawCompare() {
   s+='<text x="'+rsx+'" y="'+(loy+14)+'" fill="'+C.warm+'" font-size="9" font-family="var(--font-mono)" text-anchor="middle">r \u2260 0</text>';
   s+='<text x="'+lCx+'" y="'+(lCy+100)+'" fill="'+C.green+'" font-size="11" font-family="var(--font-mono)" text-anchor="middle">u\u2081\u00b7G + u\u2082\u00b7Q = P</text>';
   s+='<text x="'+lCx+'" y="'+(lCy+116)+'" fill="'+C.green+'" font-size="10" font-family="var(--font-mono)" text-anchor="middle">x(P) == r \u2713</text>';
-  s+='<text x="'+lCx+'" y="'+(lCy+134)+'" fill="'+C.dim+'" font-size="9" font-family="var(--font-mono)" text-anchor="middle">Math works correctly</text>';
+  s+='<text x="'+lCx+'" y="'+(lCy+134)+'" fill="'+C.dim+'" font-size="9" font-family="var(--font-mono)" text-anchor="middle">\u041c\u0430\u0442\u0435\u043c\u0430\u0442\u0438\u043a\u0430 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e</text>';
   const[rox,roy]=rT(0,0);const rP=6+Math.sin(t*4)*3;
   s+='<circle cx="'+rox+'" cy="'+roy+'" r="'+(rP+6)+'" fill="'+C.red+'" opacity="0.08"/>';
   s+='<circle cx="'+rox+'" cy="'+roy+'" r="'+rP+'" fill="'+C.red+'" opacity="0.15"/>';
@@ -192,7 +192,7 @@ function drawCompare() {
   s+='<text x="'+(rox+12)+'" y="'+(roy-6)+'" fill="'+C.red+'" font-size="10" font-family="var(--font-mono)" font-weight="700">O (0,0)</text>';
   s+='<text x="'+rCx+'" y="'+(rCy+100)+'" fill="'+C.warm+'" font-size="11" font-family="var(--font-mono)" text-anchor="middle">0\u00b7G + 0\u00b7Q = O</text>';
   s+='<text x="'+rCx+'" y="'+(rCy+116)+'" fill="'+C.red+'" font-size="10" font-family="var(--font-mono)" text-anchor="middle">x(O) = 0 == r = 0</text>';
-  s+='<text x="'+rCx+'" y="'+(rCy+134)+'" fill="'+C.red+'" font-size="12" font-family="var(--font-mono)" text-anchor="middle" font-weight="700">TRUE \u2192 SIGNATURE ACCEPTED</text>';
+  s+='<text x="'+rCx+'" y="'+(rCy+134)+'" fill="'+C.red+'" font-size="12" font-family="var(--font-mono)" text-anchor="middle" font-weight="700">TRUE \u2192 \u041f\u041e\u0414\u041f\u0418\u0421\u042c \u041f\u0420\u0418\u041d\u042f\u0422\u0410</text>';
   return s;
 }
 function ecdsaRender() {
@@ -213,9 +213,9 @@ window.ecdsaSetMode = function(m) {
   updateInfo();
 };
 function updateInfo() {
-  if (mode==='normal') info.innerHTML='<span style="color:'+C.pink+'">$</span> <span style="color:'+C.dim+'"># Normal ECDSA verification</span><br>Signature <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">(<span style="color:'+C.pink+'">r</span>, <span style="color:'+C.pink+'">s</span>)</code> - a pair of numbers, both <span style="color:'+C.warm+'">\u2265 1</span>.<br><span style="color:'+C.pink+'">r</span> = x-coordinate of point <span style="color:'+C.warm+'">R = k\u00b7G</span> on the curve.<br>Verifier computes <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">P = u\u2081\u00b7G + u\u2082\u00b7Q</code> and checks <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">x(P) == r</code>.<br>Point P lands on the curve \u2192 coordinate matches \u2192 <span style="color:'+C.green+'">signature valid</span>.';
-  else if (mode==='attack') info.innerHTML='<span style="color:'+C.pink+'">$</span> <span style="color:'+C.dim+'"># CVE-2022-21449: Psychic Signatures</span><br>Attacker sends <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">(<span style="color:'+C.red+'">r=0</span>, <span style="color:'+C.red+'">s=0</span>)</code>. Java 15-18 does not check <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">r \u2265 1 && s \u2265 1</code>.<br><span style="color:'+C.red+'">s\u207b\u00b9</span> does not exist (division by zero), but Java returns <span style="color:'+C.red+'">0</span>.<br><span style="color:'+C.warm+'">u\u2081 = hash\u00b70 = 0</span>, <span style="color:'+C.warm+'">u\u2082 = 0\u00b70 = 0</span><br><span style="color:'+C.warm+'">P = 0\u00b7G + 0\u00b7Q = O</span> (point at infinity).<br><code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">x(O) = 0 == r = 0</code> \u2192 <span style="color:'+C.green+'">TRUE</span>. <span style="color:'+C.red+'">Signature accepted without private key.</span>';
-  else info.innerHTML='<span style="color:'+C.pink+'">$</span> <span style="color:'+C.dim+'"># Comparison: normal vs zero signature</span><br><span style="color:'+C.green+'">Left:</span> point R lies on the curve, <span style="color:'+C.pink+'">r = x(R) \u2260 0</span>. Computations yield a real point P.<br><span style="color:'+C.red+'">Right:</span> everything collapses to origin. <span style="color:'+C.red+'">0\u00b7G + 0\u00b7Q = O</span>.<br>One missed check <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;"><span style="color:'+C.warm+'">if (r < 1 || s < 1)</span></code> - and all of ECDSA math is powerless.';
+  if (mode==='normal') info.innerHTML='<span style="color:'+C.pink+'">$</span> <span style="color:'+C.dim+'"># \u041d\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0432\u0435\u0440\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u044f ECDSA</span><br>\u041f\u043e\u0434\u043f\u0438\u0441\u044c <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">(<span style="color:'+C.pink+'">r</span>, <span style="color:'+C.pink+'">s</span>)</code> - \u043f\u0430\u0440\u0430 \u0447\u0438\u0441\u0435\u043b, \u043e\u0431\u0430 <span style="color:'+C.warm+'">\u2265 1</span>.<br><span style="color:'+C.pink+'">r</span> = x-\u043a\u043e\u043e\u0440\u0434\u0438\u043d\u0430\u0442\u0430 \u0442\u043e\u0447\u043a\u0438 <span style="color:'+C.warm+'">R = k\u00b7G</span> \u043d\u0430 \u043a\u0440\u0438\u0432\u043e\u0439.<br>\u0412\u0435\u0440\u0438\u0444\u0438\u043a\u0430\u0442\u043e\u0440 \u0432\u044b\u0447\u0438\u0441\u043b\u044f\u0435\u0442 <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">P = u\u2081\u00b7G + u\u2082\u00b7Q</code> \u0438 \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u0435\u0442 <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">x(P) == r</code>.<br>\u0422\u043e\u0447\u043a\u0430 P \u043b\u0435\u0436\u0438\u0442 \u043d\u0430 \u043a\u0440\u0438\u0432\u043e\u0439 \u2192 \u043a\u043e\u043e\u0440\u0434\u0438\u043d\u0430\u0442\u0430 \u0441\u043e\u0432\u043f\u0430\u0434\u0430\u0435\u0442 \u2192 <span style="color:'+C.green+'">\u043f\u043e\u0434\u043f\u0438\u0441\u044c \u0432\u0430\u043b\u0438\u0434\u043d\u0430</span>.';
+  else if (mode==='attack') info.innerHTML='<span style="color:'+C.pink+'">$</span> <span style="color:'+C.dim+'"># CVE-2022-21449: Psychic Signatures</span><br>\u0410\u0442\u0430\u043a\u0443\u044e\u0449\u0438\u0439 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u044f\u0435\u0442 <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">(<span style="color:'+C.red+'">r=0</span>, <span style="color:'+C.red+'">s=0</span>)</code>. Java 15-18 \u043d\u0435 \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u0435\u0442 <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">r \u2265 1 && s \u2265 1</code>.<br><span style="color:'+C.red+'">s\u207b\u00b9</span> \u043d\u0435 \u0441\u0443\u0449\u0435\u0441\u0442\u0432\u0443\u0435\u0442 (\u0434\u0435\u043b\u0435\u043d\u0438\u0435 \u043d\u0430 \u043d\u043e\u043b\u044c), \u043d\u043e Java \u0432\u043e\u0437\u0432\u0440\u0430\u0449\u0430\u0435\u0442 <span style="color:'+C.red+'">0</span>.<br><span style="color:'+C.warm+'">u\u2081 = hash\u00b70 = 0</span>, <span style="color:'+C.warm+'">u\u2082 = 0\u00b70 = 0</span><br><span style="color:'+C.warm+'">P = 0\u00b7G + 0\u00b7Q = O</span> (\u0442\u043e\u0447\u043a\u0430 \u0431\u0435\u0441\u043a\u043e\u043d\u0435\u0447\u043d\u043e\u0441\u0442\u0438).<br><code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;">x(O) = 0 == r = 0</code> \u2192 <span style="color:'+C.green+'">TRUE</span>. <span style="color:'+C.red+'">\u041f\u043e\u0434\u043f\u0438\u0441\u044c \u043f\u0440\u0438\u043d\u044f\u0442\u0430 \u0431\u0435\u0437 \u043f\u0440\u0438\u0432\u0430\u0442\u043d\u043e\u0433\u043e \u043a\u043b\u044e\u0447\u0430.</span>';
+  else info.innerHTML='<span style="color:'+C.pink+'">$</span> <span style="color:'+C.dim+'"># \u0421\u0440\u0430\u0432\u043d\u0435\u043d\u0438\u0435: \u043d\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u0430\u044f vs \u043d\u0443\u043b\u0435\u0432\u0430\u044f \u043f\u043e\u0434\u043f\u0438\u0441\u044c</span><br><span style="color:'+C.green+'">\u0421\u043b\u0435\u0432\u0430:</span> \u0442\u043e\u0447\u043a\u0430 R \u043b\u0435\u0436\u0438\u0442 \u043d\u0430 \u043a\u0440\u0438\u0432\u043e\u0439, <span style="color:'+C.pink+'">r = x(R) \u2260 0</span>. \u0412\u044b\u0447\u0438\u0441\u043b\u0435\u043d\u0438\u044f \u0434\u0430\u044e\u0442 \u0440\u0435\u0430\u043b\u044c\u043d\u0443\u044e \u0442\u043e\u0447\u043a\u0443 P.<br><span style="color:'+C.red+'">\u0421\u043f\u0440\u0430\u0432\u0430:</span> \u0432\u0441\u0435 \u0441\u0445\u043b\u043e\u043f\u044b\u0432\u0430\u0435\u0442\u0441\u044f \u0432 \u043d\u0430\u0447\u0430\u043b\u043e \u043a\u043e\u043e\u0440\u0434\u0438\u043d\u0430\u0442. <span style="color:'+C.red+'">0\u00b7G + 0\u00b7Q = O</span>.<br>\u041e\u0434\u043d\u0430 \u043f\u0440\u043e\u043f\u0443\u0449\u0435\u043d\u043d\u0430\u044f \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;"><span style="color:'+C.warm+'">if (r < 1 || s < 1)</span></code> - \u0438 \u0432\u0441\u044f \u043c\u0430\u0442\u0435\u043c\u0430\u0442\u0438\u043a\u0430 ECDSA \u0431\u0435\u0441\u0441\u0438\u043b\u044c\u043d\u0430.';
 }
 updateInfo();
 ecdsaRender();

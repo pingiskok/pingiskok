@@ -1,6 +1,6 @@
 ---
 title: "JWT, Part 8: Psychic Signatures - zero signature on Java"
-date: 2026-03-20T18:07:00+03:00
+date: 2026-03-21T18:07:00+03:00
 number: 8
 tags: ["jwt", "security", "web", "auth"]
 summary: "A signature of all zeros passes ECDSA verification on Java 15-18. For any message, with any key. Five lines of Python - and you're admin."

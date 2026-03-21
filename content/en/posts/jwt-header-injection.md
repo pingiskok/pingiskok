@@ -1,6 +1,6 @@
 ---
 title: "JWT, Part 6: jku/x5u/jwk/x5c - the entire JWT header is an attack surface"
-date: 2026-03-20T18:05:00+03:00
+date: 2026-03-21T18:05:00+03:00
 number: 6
 tags: ["jwt", "security", "web", "auth"]
 summary: "The JWT header can contain a URL, and the server will go to that URL to download the key for signature verification. This isn't a bug - it's RFC 7515."
