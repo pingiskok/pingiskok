@@ -87,9 +87,12 @@ The first thing I run when testing JWT is a dictionary attack with the specializ
 
 - `secret`, `password`, `123456` - classics
 - `your-256-bit-secret` - default from jwt.io that developers copy to production
+- `a-string-secret-at-least-256-bits-long` - another popular default from tutorials
 - `django-insecure-*` - framework default secrets
 - `changeme`, `test`, `development` - secrets that were supposed to be "changed later"
 - `notfound` - that very secret from CVE-2025-20188 (Cisco IOS XE, CVSS 10.0)
+
+Important point: `your-256-bit-secret` and `a-string-secret-at-least-256-bits-long` both contain "256 bit" in their name and are longer than 32 bytes. A developer sees the RFC requirement "key >= 256 bits", picks a string with "256-bit" in the name and thinks everything is fine. But 256 bits is about entropy, not string length. `a-string-secret-at-least-256-bits-long` is 38 ASCII characters, formally 304 bits. But it's a readable English phrase, it's in the dictionary and is cracked instantly. When the RFC says "256 bits", it means `openssl rand -base64 32` - 32 random bytes where every bit is unpredictable.
 
 A dictionary attack with this wordlist takes a fraction of a second and often works. If it doesn't help - add mutation rules, then masks. And only then move to full brute-force.
 
