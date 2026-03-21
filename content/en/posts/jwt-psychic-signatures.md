@@ -122,12 +122,13 @@ function drawNormal() {
   const R = {x:1.5, y:Math.sqrt(1.5**3-3*1.5+3)};
   const Q = {x:0.3, y:Math.sqrt(0.3**3-3*0.3+3)};
   s += drawPoint(G.x,G.y,C.pinkMid,'G (generator)','left',false);
-  s += drawPoint(Q.x,Q.y,C.link,'Q (pub key)','right',false);
+  s += drawPoint(Q.x,Q.y,C.link,'','right',false);
+  var[qsx,qsy]=toSvg(Q.x,Q.y);s+='<line x1="'+qsx+'" y1="'+qsy+'" x2="'+(qsx+20)+'" y2="'+(qsy-32)+'" stroke="'+C.link+'" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>';s+='<text x="'+(qsx-16)+'" y="'+(qsy-36)+'" fill="'+C.link+'" font-size="11" font-family="var(--font-mono)" text-anchor="start">Q (pub key)</text>';
   s += drawPoint(R.x,R.y,C.warm,'R = k\u00b7G','right',true);
   const [gsx,gsy]=toSvg(G.x,G.y), [rsx,rsy]=toSvg(R.x,R.y);
-  s += '<path d="M'+gsx+' '+gsy+' Q'+cx+' '+(cy-60)+' '+rsx+' '+rsy+'" fill="none" stroke="'+C.warm+'" stroke-width="1" stroke-dasharray="6 4" opacity="0.6"/>';
+  s += '<path d="M'+gsx+' '+gsy+' Q'+cx+' '+(cy-40)+' '+rsx+' '+rsy+'" fill="none" stroke="'+C.warm+'" stroke-width="1" stroke-dasharray="6 4" opacity="0.6"/>';
   const [rx0]=toSvg(R.x,0);
-  s += '<line x1="'+rsx+'" y1="'+rsy+'" x2="'+rsx+'" y2="'+cy+'" stroke="'+C.warm+'" stroke-width="1" stroke-dasharray="4 3" opacity="0.4"/>';
+  s += '<line x1="'+rsx+'" y1="'+rsy+'" x2="'+rsx+'" y2="'+(cy+22)+'" stroke="'+C.warm+'" stroke-width="1" stroke-dasharray="4 3" opacity="0.4"/>';
   s += '<text x="'+rx0+'" y="'+(cy+32)+'" fill="'+C.warm+'" font-size="11" font-family="var(--font-mono)" text-anchor="middle">r = x(R)</text>';
   const vx=cx+170;
   s += '<text x="'+vx+'" y="44" fill="'+C.warm+'" font-size="12" font-family="var(--font-mono)">Signature: (r, s)</text>';
