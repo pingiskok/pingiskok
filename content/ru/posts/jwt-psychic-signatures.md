@@ -64,12 +64,19 @@ const info = document.getElementById('ecdsa-info');
 let mode = 'normal';
 let t = 0;
 const cx = 320, cy = 210, scale = 48;
-const C = {
-  pink: '#fecdc8', pinkMid: '#d4a8a3', warm: '#e8a838',
-  red: '#ff6b6b', green: '#68d391', link: '#6ab7e2',
-  text: '#dce1e8', dim: '#8696a7', border: '#2b3d4f',
-  card: '#1e2c3a', grid: '#253545'
-};
+function getC() {
+  var s = getComputedStyle(document.documentElement);
+  var v = function(n,f){ return s.getPropertyValue(n).trim() || f; };
+  var isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+  return {
+    pink: v('--pink', '#fecdc8'), pinkMid: v('--pink-mid', '#d4a8a3'), warm: v('--warm', '#e8a838'),
+    red: isDark ? '#ff6b6b' : '#c93835', green: isDark ? '#68d391' : '#1a7a52', link: v('--link', '#6ab7e2'),
+    text: v('--text', '#dce1e8'), dim: v('--text-dim', '#8696a7'), border: v('--border', '#2b3d4f'),
+    card: v('--bg-card', '#1e2c3a'), grid: isDark ? '#253545' : '#d8d0c9'
+  };
+}
+var C = getC();
+new MutationObserver(function(){ C = getC(); }).observe(document.documentElement, {attributes: true, attributeFilter: ['data-theme']});
 function toSvg(x, y) { return [cx + x * scale, cy - y * scale]; }
 function curvePoints() {
   const pts = [], pts2 = [];
@@ -200,7 +207,7 @@ function ecdsaRender() {
   t += 0.016;
   let s = '';
   if (mode === 'compare') { s += drawCompare(); }
-  else { s += drawGrid(); s += drawCurve(); s += '<text x="72" y="70" fill="'+C.pink+'" font-size="10" font-family="var(--font-mono)" opacity="0.5">y\u00b2 = x\u00b3 - 3x + 3</text>'; s += mode==='normal'?drawNormal():drawAttack(); }
+  else { s += drawGrid(); s += drawCurve(); s += '<text x="72" y="85" fill="'+C.pink+'" font-size="10" font-family="var(--font-mono)" opacity="0.5">y\u00b2 = x\u00b3 - 3x + 3</text>'; s += mode==='normal'?drawNormal():drawAttack(); }
   svg.innerHTML = s;
   requestAnimationFrame(ecdsaRender);
 }

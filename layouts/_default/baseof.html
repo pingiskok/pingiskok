@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="{{ .Site.Language.Lang }}">
+<html lang="{{ .Site.Language.Lang }}" data-theme="">
+<script>(function(){var t=localStorage.getItem('rmrf-theme');document.documentElement.setAttribute('data-theme',t||'dark');})()</script>
 <head>
   {{ partial "head.html" . }}
 </head>
@@ -21,19 +22,21 @@
   <script>
   (function() {
     var nav = document.getElementById('floatNav');
-    if (!nav) return;
-    var hero = document.querySelector('.hero');
-    if (!hero) { nav.classList.add('visible'); return; }
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          nav.classList.remove('visible');
-        } else {
-          nav.classList.add('visible');
-        }
+    if (nav) nav.classList.add('visible');
+  })();
+  </script>
+  <script>
+  (function(){
+    var KEY='rmrf-theme';
+    var html=document.documentElement;
+    document.querySelectorAll('.theme-toggle').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var cur=html.getAttribute('data-theme');
+        var next=cur==='light'?'dark':'light';
+        html.setAttribute('data-theme',next);
+        localStorage.setItem(KEY,next);
       });
-    }, { threshold: 0 });
-    observer.observe(hero);
+    });
   })();
   </script>
 </body>

@@ -1,6 +1,11 @@
 <nav class="float-nav" id="floatNav">
+  {{ if not .IsHome }}
   <a href="{{ .Site.Home.Permalink }}" class="float-nav-home" aria-label="{{ i18n "back" }}">
     <img src="{{ "images/avatar.jpg" | relURL }}" alt="{{ .Site.Title }}" class="float-nav-avatar">
   </a>
-  {{ partial "lang-switch.html" . }}
+  {{ end }}
+  <div class="float-nav-controls">
+    {{ partial "lang-switch.html" . }}
+    <button class="theme-toggle" id="themeToggle" aria-label="Switch theme"><span class="ico-sun">&#9728;</span><span class="ico-moon">&#9790;</span></button>
+  </div>
 </nav>
