@@ -777,6 +777,10 @@ a:hover {
     top: 0.75rem;
     right: 0.75rem;
   }
+
+  .post-meta {
+    padding-right: 120px;
+  }
 }
 
 /* === REDUCED MOTION === */
