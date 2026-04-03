@@ -1,2 +1,5 @@
 all_posts: "All posts"
 back: "All posts"
+prev_post: "Previous"
+next_post: "Next"
+to_top: "Top"

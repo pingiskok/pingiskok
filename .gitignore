@@ -2,3 +2,9 @@ public/
 resources/
 .hugo_build.lock
 .DS_Store
+**/CLAUDE.md
+README.md
+.omc/
+state/
+content/posts/
+*_original

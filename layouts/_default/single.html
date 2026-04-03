@@ -1,5 +1,5 @@
 {{ define "main" }}
-<article class="post-full">
+<article class="post-full" id="top">
   <a href="{{ .Site.Home.Permalink }}" class="back-link">&larr; {{ i18n "back" }}</a>
 
   <header class="post-header">
@@ -16,8 +16,17 @@
     {{ .Content }}
   </div>
 
-  <footer class="post-footer">
-    <a href="{{ .Site.Home.Permalink }}" class="back-link">&larr; {{ i18n "back" }}</a>
-  </footer>
+  <nav class="post-nav">
+    <a href="#top" class="post-nav-up">&uarr; {{ i18n "to_top" }}</a>
+    <span class="post-nav-links">
+      {{- with .PrevInSection -}}
+      <a href="{{ .RelPermalink }}" class="post-nav-link" title="{{ .Title }}">&larr; {{ i18n "prev_post" }}</a>
+      {{- end -}}
+      {{- if and .PrevInSection .NextInSection }} <span class="post-nav-sep">/</span> {{ end -}}
+      {{- with .NextInSection -}}
+      <a href="{{ .RelPermalink }}" class="post-nav-link" title="{{ .Title }}">{{ i18n "next_post" }} &rarr;</a>
+      {{- end -}}
+    </span>
+  </nav>
 </article>
 {{ end }}

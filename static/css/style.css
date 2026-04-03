@@ -678,11 +678,41 @@ a:hover {
   margin: 2rem 0;
 }
 
-/* === POST FOOTER === */
-.post-footer {
+/* === POST NAV (prev/next) === */
+.post-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
   margin-top: 2.5rem;
   padding-top: 1.2rem;
   border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+}
+
+.post-nav-link,
+.post-nav-up {
+  color: var(--pink);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.post-nav-link:hover,
+.post-nav-up:hover {
+  color: var(--pink-mid);
+}
+
+.post-nav-up { margin-right: auto; }
+
+.post-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.post-nav-sep {
+  color: var(--border);
 }
 
 /* === FOOTER === */
